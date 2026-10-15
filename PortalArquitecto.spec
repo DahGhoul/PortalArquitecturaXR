@@ -27,27 +27,26 @@ exe = EXE(
     pyz,
     a.scripts,
     [],
-    exclude_binaries=True,       # modo carpeta (onedir): arranca mas rapido que onefile
-    name="PortalArquitecto",
-    console=False,               # sin ventana negra de consola
-    upx=False,                   # UPX dispara falsos positivos de antivirus
-    icon=None,                   # pon aqui "icono.ico" (Windows) / "icono.icns" (macOS)
+    exclude_binaries=True,
+    name="RooSpatialPortal",
+    console=False,
+    upx=False,
+    icon=None,
 )
 
-coll = COLLECT(exe, a.binaries, a.datas, name="PortalArquitecto", upx=False)
+coll = COLLECT(exe, a.binaries, a.datas, name="RooSpatialPortal", upx=False)
 
 if ES_MAC:
     app = BUNDLE(
         coll,
-        name="PortalArquitecto.app",
+        name="RooSpatialPortal.app",
         icon=None,
-        bundle_identifier="com.portalarquitecto.app",
+        bundle_identifier="com.roosoluciones.spatialportal",
         info_plist={
-            "CFBundleDisplayName": "Portal Arquitecto XR",
-            "CFBundleShortVersionString": "1.0.0",
+            "CFBundleDisplayName": "Roo Spatial Portal XR",
+            "CFBundleShortVersionString": "1.2.0",
             "NSHighResolutionCapable": True,
-            # macOS 15+ pide permiso para la red local (radar UDP hacia el Meta Quest)
-            "NSLocalNetworkUsageDescription": "Necesario para que el visor Meta Quest encuentre este equipo en la red local.",
+            "NSLocalNetworkUsageDescription": "Necesario para que el visor Meta Quest descubra este equipo mediante broadcast en la red local.",
         },
     )
 

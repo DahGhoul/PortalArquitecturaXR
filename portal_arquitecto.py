@@ -1,3 +1,17 @@
+"""
+Roo Spatial Portal XR
+=====================
+Pasarela de Geometria 3D y Servidor de Distribucion Local para Meta Quest & WebXR.
+Desarrollado por roo Soluciones Digitales.
+Filosofia: Tecnologia con Proposito · El futuro, simple.
+
+Arquitectura:
+- Servidor HTTP multihilo compatible con RFC 7233 (Range Requests) para streaming 3D.
+- Radar UDP broadcast (puerto 47777) para autodescubrimiento sin configuracion de red.
+- Pipeline de optimizacion glTF 2.0 (meshopt / gltfpack) con presets adaptados a Meta Quest.
+- Interfaz nativa desacoplada basada en el motor web del sistema operativo (pywebview).
+"""
+
 import os
 import sys
 import json
@@ -14,24 +28,33 @@ import urllib.request
 import urllib.parse
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 
-PUERTO_HTTP = 8000
-PUERTO_UDP_RADAR = 47777
-APP_NOMBRE = "PortalArquitecto"
+# Metadatos del Software y Branding Institucional
+APP_NAME = "Roo Spatial Portal XR"
+APP_VERSION = "1.2.0"
+COMPANY_NAME = "roo Soluciones Digitales"
+SLOGAN = "Tecnologia con Proposito · El futuro, simple"
+
+HTTP_PORT_DEFAULT = 8000
+UDP_RADAR_PORT = 47777
+MAX_UPLOAD_SIZE = 2 * 1024 * 1024 * 1024  # 2 GB maximo por modelo GLB
 
 
 def carpeta_datos_usuario():
-    """Carpeta escribible por usuario: el .app de macOS y Program Files no lo son."""
+    """
+    Determina la ruta del directorio de almacenamiento persistente del usuario
+    segun el estandar de cada sistema operativo (evita escrituras en directorios
+    restringidos como Program Files o paquetes .app en macOS).
+    """
     if os.name == "nt":
         base = os.environ.get("LOCALAPPDATA") or os.path.expanduser("~")
     elif sys.platform == "darwin":
         base = os.path.join(os.path.expanduser("~"), "Library", "Application Support")
     else:
         base = os.environ.get("XDG_DATA_HOME") or os.path.join(os.path.expanduser("~"), ".local", "share")
-    return os.path.join(base, APP_NOMBRE)
+    return os.path.join(base, "RooSpatialPortal")
 
 
-# Empaquetado con PyInstaller: recursos (static, gltfpack) dentro de sys._MEIPASS
-# y datos del usuario (modelos) en la carpeta de datos del sistema operativo.
+# Resolucion de rutas segun entorno (ejecucion directa vs empaquetado binario)
 ES_EMPAQUETADO = getattr(sys, "frozen", False)
 if ES_EMPAQUETADO:
     BASE_DIR = carpeta_datos_usuario()
@@ -50,14 +73,15 @@ ARCHIVO_ESTADO = os.path.join(CARPETA_MODELOS, "_estado.json")
 os.makedirs(CARPETA_MODELOS, exist_ok=True)
 os.makedirs(CARPETA_TOOLS, exist_ok=True)
 
-# En modo ventana (--windowed) no hay consola: sys.stdout es None y print() fallaria.
+# Redireccion segura de flujos estandar en entornos sin terminal interactiva
 if sys.stdout is None or sys.stderr is None:
-    _log = open(os.path.join(BASE_DIR, "portal.log"), "a", encoding="utf-8", buffering=1)
+    _log = open(os.path.join(BASE_DIR, "roo_portal.log"), "a", encoding="utf-8", buffering=1)
     sys.stdout = sys.stdout or _log
     sys.stderr = sys.stderr or _log
 
 LOCK_ESTADO = threading.Lock()
-TAMANO_MAX_SUBIDA = 2 * 1024 * 1024 * 1024  # 2 GB
+PUERTO_HTTP = HTTP_PORT_DEFAULT
+PUERTO_UDP_RADAR = UDP_RADAR_PORT
 
 
 def obtener_ip_local():
@@ -95,6 +119,9 @@ def iniciar_radar_udp():
                 pin = generar_codigo_pin(ip)
                 mensaje = json.dumps({
                     "tipo": "VISOR_ARQ_SERVER",
+                    "app": APP_NAME,
+                    "version": APP_VERSION,
+                    "empresa": COMPANY_NAME,
                     "url": f"http://{ip}:{PUERTO_HTTP}",
                     "ip": ip,
                     "pin": pin,
@@ -563,6 +590,10 @@ class ManejadorPortalVR(BaseHTTPRequestHandler):
             modelos_det = listar_modelos_detallados()
             almacenamiento = calcular_almacenamiento()
             self.enviar_json({
+                "app": APP_NAME,
+                "version": APP_VERSION,
+                "empresa": COMPANY_NAME,
+                "slogan": SLOGAN,
                 "ip": ip,
                 "pin": generar_codigo_pin(ip),
                 "url": f"http://{ip}:{PUERTO_HTTP}",
@@ -730,18 +761,21 @@ def crear_servidor():
 
 
 def abrir_ventana_app(url):
-    """Ventana nativa con pywebview (WebView2 en Windows, WebKit en macOS).
-    Devuelve False si pywebview no esta disponible para usar el navegador."""
+    """
+    Inicializa una ventana de escritorio nativa utilizando pywebview
+    (aprovechando Microsoft Edge WebView2 en Windows o WebKit en macOS sin sobrecoste de memoria).
+    Retorna True si la ventana se inicializo correctamente, o False si se debe recurrir al navegador del sistema.
+    """
     try:
         import webview
     except ImportError:
         return False
     try:
-        webview.create_window("Portal Arquitecto XR", url, width=1320, height=860, min_size=(420, 560))
+        webview.create_window(APP_NAME, url, width=1340, height=880, min_size=(460, 600))
         webview.start()
         return True
     except Exception as e:
-        print(f"[AVISO] No se pudo abrir la ventana nativa ({e}). Se usara el navegador.")
+        print(f"[AVISO] No se pudo inicializar la interfaz nativa ({e}). Iniciando en navegador predeterminado.")
         return False
 
 
@@ -749,23 +783,28 @@ def main():
     try:
         servidor = crear_servidor()
     except OSError as e:
-        print(f"[ERROR] {e}")
+        print(f"[ERROR CRITICO] {e}")
         if not ES_EMPAQUETADO:
-            input("Presiona Enter para salir...")
+            input("Presione Enter para salir...")
         return
 
     ip_actual = obtener_ip_local()
-    print("-" * 60)
-    print(f"SERVIDOR XR ACTIVO  |  PIN: {generar_codigo_pin(ip_actual)}  |  http://{ip_actual}:{PUERTO_HTTP}")
-    print(f"Modelos en: {CARPETA_MODELOS}")
-    print("-" * 60)
+    pin_actual = generar_codigo_pin(ip_actual)
+    print("=" * 64)
+    print(f" {APP_NAME} v{APP_VERSION} - {COMPANY_NAME}")
+    print(f" {SLOGAN}")
+    print("=" * 64)
+    print(f" Servidor Activo : http://{ip_actual}:{PUERTO_HTTP}")
+    print(f" PIN de Enlace   : {pin_actual}")
+    print(f" Almacenamiento  : {CARPETA_MODELOS}")
+    print("=" * 64)
+
     iniciar_radar_udp()
     threading.Thread(target=servidor.serve_forever, daemon=True).start()
 
     url_local = f"http://127.0.0.1:{PUERTO_HTTP}"
-    # --navegador fuerza el modo antiguo (pestana del navegador en vez de ventana propia)
     if "--navegador" not in sys.argv and abrir_ventana_app(url_local):
-        servidor.shutdown()  # al cerrar la ventana se apaga el servidor
+        servidor.shutdown()
         return
 
     webbrowser.open(url_local)
@@ -773,7 +812,7 @@ def main():
         while True:
             time.sleep(3600)
     except KeyboardInterrupt:
-        print("\nServidor detenido.")
+        print(f"\n[{COMPANY_NAME}] Servidor detenido.")
         servidor.shutdown()
 
 

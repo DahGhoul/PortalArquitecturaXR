@@ -19,12 +19,15 @@ fi
 pyinstaller --noconfirm --clean PortalArquitecto.spec
 
 # Firma ad-hoc (sin cuenta de Apple Developer). El usuario debera abrirla con clic derecho > Abrir la primera vez.
-codesign --force --deep --sign - dist/PortalArquitecto.app || true
+codesign --force --deep --sign - dist/RooSpatialPortal.app || true
 
-# .dmg sencillo para distribuir
-hdiutil create -volname "Portal Arquitecto XR" -srcfolder dist/PortalArquitecto.app -ov -format UDZO dist/PortalArquitecto.dmg
+# .dmg de distribucion
+hdiutil create -volname "Roo Spatial Portal XR" -srcfolder dist/RooSpatialPortal.app -ov -format UDZO dist/RooSpatialPortal.dmg
 
 echo
-echo "Listo: dist/PortalArquitecto.app y dist/PortalArquitecto.dmg"
-echo "Los modelos se guardan en ~/Library/Application Support/PortalArquitecto/modelos_vr"
+echo "========================================================"
+echo " Listo: dist/RooSpatialPortal.app y dist/RooSpatialPortal.dmg"
+echo " Desarrollado por roo Soluciones Digitales"
+echo " Los datos se alojan en: ~/Library/Application Support/RooSpatialPortal/modelos_vr"
+echo "========================================================"
 

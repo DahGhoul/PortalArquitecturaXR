@@ -35,9 +35,17 @@ body {
     justify-content: space-between;
     gap: 10px 24px;
 }
-.topbar-left { display: flex; align-items: center; gap: 16px; min-width: 0; }
-.app-title { font-weight: 600; font-size: 15px; letter-spacing: -0.01em; white-space: nowrap; }
-.divider-v { width: 1px; height: 20px; background: var(--border); }
+.topbar-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.brand-block { display: flex; align-items: center; flex-shrink: 0; }
+.brand-logo { height: 26px; width: auto; object-fit: contain; display: block; }
+.app-identity { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.app-title { font-weight: 600; font-size: 14px; letter-spacing: -0.01em; white-space: nowrap; }
+.app-badge {
+    background: #18181B; color: #FFFFFF; font-size: 9px; font-weight: 700;
+    padding: 2px 6px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.08em;
+    font-family: var(--mono);
+}
+.divider-v { width: 1px; height: 20px; background: var(--border); flex-shrink: 0; }
 .status-indicator {
     display: flex; align-items: center; gap: 8px; min-width: 0;
     font-size: 12px; color: var(--text-secondary); font-family: var(--mono);
@@ -207,4 +215,49 @@ select:focus { border-color: var(--text-primary); }
     select { padding: 8px 10px; }
     .hint-mouse { display: none; }
     .hint-touch { display: inline; }
+}
+
+/* ---------- Pie de Pagina Institucional ---------- */
+.app-footer {
+    max-width: 1360px;
+    margin: 40px auto 28px auto;
+    padding: 18px 32px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--text-muted);
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.footer-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.footer-company {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+.footer-tagline {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+.footer-bullet {
+    color: var(--border-strong);
+}
+.footer-right {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+}
+@media (max-width: 720px) {
+    .app-footer {
+        padding: 16px;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-top: 24px;
+    }
 }

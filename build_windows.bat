@@ -1,5 +1,5 @@
 @echo off
-REM Genera dist\PortalArquitecto\PortalArquitecto.exe  (comprime la carpeta dist\PortalArquitecto para distribuir)
+REM Genera dist\RooSpatialPortal\RooSpatialPortal.exe
 cd /d "%~dp0"
 
 if not exist .venv-build (
@@ -12,8 +12,12 @@ python -m pip install -r requirements.txt || goto :error
 python -m PyInstaller --noconfirm --clean PortalArquitecto.spec || goto :error
 
 echo.
-echo Listo: dist\PortalArquitecto\PortalArquitecto.exe
-echo Los modelos del usuario se guardan en %%LOCALAPPDATA%%\PortalArquitecto\modelos_vr
+echo ========================================================
+echo  Compilacion exitosa: dist\RooSpatialPortal\RooSpatialPortal.exe
+echo  Desarrollado por roo Soluciones Digitales
+echo  Los datos de modelos se alojan en:
+echo  %%LOCALAPPDATA%%\RooSpatialPortal\modelos_vr
+echo ========================================================
 exit /b 0
 
 :error
