@@ -21,7 +21,7 @@
 
 ### **Desarrollado por:**
 **Diego Joel Cuba Moya** & **Ronaldo Carlos Robles Romero**  
-**Empresa:** [roo | Soluciones Digitales](https://github.com/roo-soluciones)
+**Empresa:** **roo | Soluciones Digitales**
 
 </div>
 
@@ -42,9 +42,9 @@ Este proyecto forma parte de la suite espacial de **roo | Soluciones Digitales**
 └────────────────────────────────────────┘                                  └────────────────────────────────────────┘
 ```
 
-1. **[Portal Arquitectura XR](https://github.com/roo-soluciones/portal-arquitectura-xr) (Este repositorio / PC):**  
+1. **[Portal Arquitectura XR](https://github.com/DahGhoul/PortalArquitecturaXR) (Este repositorio / PC):**  
    Aplicación de escritorio y servidor local para la laptop o estación de trabajo del arquitecto. Gestiona la carga de archivos `.glb`, optimiza mallas con `gltfpack`, emite la señal de radar UDP y transmite los modelos de forma ultrarrápida.
-2. **[Visor Arquitectura MR](https://github.com/roo-soluciones/VisorArquitecturaMR) (Unity / Meta Quest):**  
+2. **[Visor Arquitectura MR](https://github.com/DahGhoul/VisorArquitecturaMR) (Unity / Meta Quest):**  
    Aplicación inmersiva para visores Meta Quest (2, 3, 3S, Pro) y PC VR. Detecta automáticamente la PC en la red, descarga el modelo y permite recorrerlo a escala 1:1, sobrevolarlo como dron o manipularlo como maqueta en la mesa mediante Passthrough.
 
 ---
@@ -138,8 +138,8 @@ Este proyecto forma parte de la suite espacial de **roo | Soluciones Digitales**
 
 1. **Clonar el repositorio:**
    ```bash
-   git clone https://github.com/roo-soluciones/portal-arquitectura-xr.git
-   cd portal-arquitectura-xr
+   git clone https://github.com/DahGhoul/PortalArquitecturaXR.git
+   cd PortalArquitecturaXR
    ```
 
 2. **Crear entorno virtual e instalar dependencias:**
