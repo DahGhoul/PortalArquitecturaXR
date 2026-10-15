@@ -92,6 +92,7 @@ if sys.stdout is None or sys.stderr is None:
 LOCK_ESTADO = threading.Lock()
 PUERTO_HTTP = HTTP_PORT_DEFAULT
 PUERTO_UDP_RADAR = UDP_RADAR_PORT
+TAMANO_MAX_SUBIDA = MAX_UPLOAD_SIZE
 
 
 def obtener_ip_local():
