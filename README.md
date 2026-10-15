@@ -1,103 +1,126 @@
 <div align="center">
 
-  <img src="static/img/roo-badge.png" alt="roo Soluciones Digitales" width="420" />
+<img src="static/img/roo-logo.png" alt="roo | Soluciones Digitales" width="460" />
 
-  <br/><br/>
+# Portal Arquitectura XR
+### Servidor Local, Hub de Modelos 3D y Radar de Distribución para Meta Quest & WebXR
 
-  # Roo Spatial Portal XR
-  **Pasarela y Servidor de Distribución de Geometría 3D para Meta Quest & WebXR**
+[![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.12%20%7C%203.13-blue?logo=python&logoColor=white)](https://python.org)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS-informational?logo=windows&logoColor=white)](https://github.com)
+[![glTF 2.0](https://img.shields.io/badge/Format-glTF%202.0%20%28.glb%29-orange?logo=khronosgroup&logoColor=white)](https://www.khronos.org/gltf/)
+[![UI](https://img.shields.io/badge/Engine-pywebview%20%2B%20model--viewer-brightgreen)](https://pywebview.flowrl.com/)
+[![Ecosystem](https://img.shields.io/badge/Ecosistema-roo_AEC_Spatial_Suite-purple.svg)](#ecosistema-arquitectura-mr--xr)
 
-  *Desarrollado por [roo Soluciones Digitales](https://github.com/dahghoul)*  
-  *Tecnología con Propósito · El futuro, simple*
+<br/>
 
-  <br/>
+<img src="static/img/roo-badge.png" alt="Tecnología con Propósito — El futuro, simple" width="220" />
 
-  [![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.12%20%7C%203.13-blue?logo=python&logoColor=white)](https://python.org)
-  [![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS-informational?logo=windows&logoColor=white)](https://github.com)
-  [![glTF 2.0](https://img.shields.io/badge/Format-glTF%202.0%20%28.glb%29-orange?logo=khronosgroup&logoColor=white)](https://www.khronos.org/gltf/)
-  [![UI](https://img.shields.io/badge/Engine-pywebview%20%2B%20model--viewer-brightgreen)](https://pywebview.flowrl.com/)
-  [![Build](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-blueviolet?logo=githubactions&logoColor=white)](.github/workflows/build.yml)
+<p><em>"Tecnología con Propósito — El futuro, simple"</em></p>
+
+---
+
+### **Desarrollado por:**
+**Diego Joel Cuba Moya** & **Ronaldo Carlos Robles Romero**  
+**Empresa:** [roo | Soluciones Digitales](https://github.com/roo-soluciones)
 
 </div>
 
 ---
 
-## 🌟 Descripción General
+## 🏛️ Ecosistema Arquitectura MR / XR
 
-**Roo Spatial Portal XR** es una solución corporativa de alto rendimiento desarrollada por **roo Soluciones Digitales**, concebida para conectar estaciones de diseño arquitectónico y modelado 3D con visores de Realidad Extendida (**Meta Quest 2, 3, 3S, Pro** y navegadores WebXR).
+Este proyecto forma parte de la suite espacial de **roo | Soluciones Digitales**, compuesta por dos sistemas complementarios diseñados para trabajar en sincronía sin cables:
 
-Permite transferir, inspeccionar y optimizar proyectos tridimensionales a escala real sin cables, eliminando configuraciones complejas de red y garantizando una tasa de cuadros estable (**90 FPS**) en dispositivos móviles autónomos.
+```
+┌────────────────────────────────────────┐       Wi-Fi Local (5 GHz)        ┌────────────────────────────────────────┐
+│     PORTAL ARQUITECTURA XR (PC)        │  ◄════════════════════════════►  │       VISOR ARQUITECTURA MR (VR)       │
+│                                        │   UDP Radar Broadcast (47777)    │                                        │
+│ • Servidor HTTP multihilo (RFC 7233)   │   HTTP Range Streaming (8000)    │ • Cliente inmersivo Meta Quest (Unity) │
+│ • Sincronización y emparejamiento PIN  │                                  │ • Pipeline Universal URP PBR 90 FPS    │
+│ • Optimizador de mallas (gltfpack)     │                                  │ • Modos: Peatón 1:1, Dron, Maqueta AR  │
+│ • Panel Web y Desktop (pywebview)      │                                  │ • Interfaz curva World-Space VisionOS  │
+└────────────────────────────────────────┘                                  └────────────────────────────────────────┘
+```
+
+1. **[Portal Arquitectura XR](https://github.com/roo-soluciones/portal-arquitectura-xr) (Este repositorio / PC):**  
+   Aplicación de escritorio y servidor local para la laptop o estación de trabajo del arquitecto. Gestiona la carga de archivos `.glb`, optimiza mallas con `gltfpack`, emite la señal de radar UDP y transmite los modelos de forma ultrarrápida.
+2. **[Visor Arquitectura MR](https://github.com/roo-soluciones/VisorArquitecturaMR) (Unity / Meta Quest):**  
+   Aplicación inmersiva para visores Meta Quest (2, 3, 3S, Pro) y PC VR. Detecta automáticamente la PC en la red, descarga el modelo y permite recorrerlo a escala 1:1, sobrevolarlo como dron o manipularlo como maqueta en la mesa mediante Passthrough.
 
 ---
 
-## 🚀 Características Principales
+## 🌟 Características Principales
 
 ### 1. Descubrimiento Automático por Radar UDP
-- Transmite paquetes de baliza UDP broadcast en el puerto `47777`.
-- Los visores Meta Quest detectan automáticamente la estación de trabajo en la red local y se enlazan mediante un **PIN de 4 dígitos**.
+- Emite balizas UDP broadcast continuas en el puerto `47777`.
+- El visor Meta Quest detecta de inmediato el servidor sin necesidad de escribir direcciones IP manuales.
+- Incluye vinculación de respaldo por **código PIN de 4 dígitos** para redes corporativas con aislamiento de broadcast.
 
 ### 2. Transmisión HTTP Eficiente con Range Requests (RFC 7233)
-- Soporte nativo para peticiones `bytes` parciales (código HTTP `206 Partial Content`).
-- Carga fluida de modelos pesados (+100 MB) con reanudación automática y mínimo uso de búfer en memoria.
+- Soporte nativo para peticiones parciales por rangos de bytes (`HTTP 206 Partial Content`).
+- Descarga fluida de proyectos pesados (+100 MB a +1 GB) sin bloquear la memoria RAM ni saturar la conexión inalámbrica.
 
-### 3. Pipeline de Optimización de Geometría VR (`gltfpack`)
-- **Recorrido de Lujo VR (Recomendado):** Fusión inteligente de primitivas por material (`-mm`) conservando el **100% de la geometría intacta** para reducir de miles a menos de 100 las llamadas de dibujado (*draw calls*).
-- **Equilibrado VR:** Fusión de mallas con reducción conservadora del 15% de triángulos y protección estricta de bordes (`-slb`) para evitar grietas en peldaños y molduras.
-- **Ultra Ligero VR:** Reducción del 50% con bloqueo de bordes para proyectos con alta densidad poligonal (+2M vértices).
+### 3. Pipeline de Optimización VR Integrado (`gltfpack`)
+- **Recorrido de Lujo VR (Recomendado):** Fusión de primitivas geométricas por material (`-mm`), reduciendo de miles a menos de 100 las llamadas de dibujado (*draw calls*) y preservando el **100% de la geometría intacta**.
+- **Equilibrado VR:** Fusión de mallas con reducción conservadora del 15% de triángulos y protección estricta de bordes (`-slb`) para escalones y cornisas.
+- **Ultra Ligero VR:** Reducción del 50% para proyectos con densidades masivas (+2M polígonos).
 - **Sin optimizar:** Almacenamiento directo del archivo de trabajo original sin transformaciones.
 
-### 4. Gestión Inteligente de Almacenamiento (Cero Redundancia)
-- Procesa directamente los modelos de trabajo sin almacenar duplicados ocultos.
-- Monitor en tiempo real del almacenamiento utilizado en disco.
-- Herramientas integradas de **Liberación de residuos** y **Vaciado de modelos** con un solo clic.
-
-### 5. Interfaz Moderna y App de Escritorio Nativa
-- Diseñada con CSS Grid adaptable y Container Queries (óptima para monitores de escritorio, laptops, tablets y visores).
-- Se ejecuta como ventana de escritorio nativa mediante `pywebview` (utilizando Microsoft Edge WebView2 en Windows o WebKit en macOS), evitando el elevado consumo de RAM de entornos como Electron.
-- Visor 3D WebGL integrado bajo demanda (`<model-viewer>`) que libera la GPU cuando está en espera.
+### 4. Interfaz Moderna y App de Escritorio Nativa
+- Ejecución de escritorio ultraligera mediante `pywebview` (utilizando Microsoft Edge WebView2 en Windows o WebKit en macOS), evitando el excesivo consumo de memoria de Electron.
+- Visor 3D WebGL integrado bajo demanda (`<model-viewer>`) con liberación automática de GPU al salir del modo de inspección.
 
 ---
 
-## 📦 Estructura del Proyecto
+## 📐 Guía de Modelado y Exportación para Arquitectos y Diseñadores
 
-```
-PortalArquitecto/
-├── portal_arquitecto.py        # Núcleo del servidor, radar UDP y motor de optimización
-├── PortalArquitecto.spec       # Especificación PyInstaller para Windows y macOS
-├── build_windows.bat           # Script de compilación y empaquetado para Windows (.exe)
-├── build_mac.sh                # Script de compilación, firma y creación de .dmg para macOS
-├── requirements.txt            # Dependencias del proyecto (pywebview, pyinstaller)
-├── .gitignore                  # Exclusiones de Git (builds, temporales y modelos pesados)
-├── .github/
-│   └── workflows/
-│       └── build.yml           # Integración continua para generar instaladores en la nube
-├── static/                     # Frontend y recursos de la interfaz
-│   ├── img/                    # Identidad gráfica (roo Soluciones Digitales)
-│   │   ├── roo-logo.png        # Logotipo horizontal institucional
-│   │   └── roo-badge.png       # Insignia corporativa y slogans
-│   ├── index.html              # Estructura del panel de control
-│   ├── styles.css              # Sistema de diseño responsivo
-│   ├── app.js                  # Lógica asíncrona de cliente
-│   └── vendor/
-│       └── model-viewer.min.js # Motor de inspección WebGL
-├── modelos_vr/                 # Directorio de trabajo local para modelos .glb
-└── herramientas_vr/            # Binarios portables auxiliares (gltfpack)
-```
+Para asegurar que los modelos se visualicen con máxima fidelidad, sin errores visuales ni caídas de fotogramas en el visor Meta Quest, el equipo de modelado (SketchUp, Revit, Blender, Archicad, Rhino) debe considerar las siguientes pautas:
+
+| Parámetro | Recomendación Óptima | Problema que evita |
+| :--- | :--- | :--- |
+| **Formato de Exportación** | **`.glb` binario (glTF 2.0)** | Evita carpetas de texturas sueltas o rutas rotas; todo viaja encapsulado. |
+| **Escala Métrica** | **$1 \text{ unidad} = 1 \text{ metro}$** | Aunque el visor auto-reescala si detecta mm o cm, exportar en metros asegura que el spawn y la altura de ojos sean exactos. |
+| **Orientación de Caras** | **Caras frontales hacia afuera** (blancas en SketchUp) | Evita sombreados oscurecidos o caras invertidas. En SketchUp: *Invertir Caras* si se muestran en tono azul/gris. |
+| **Vidrios y Cristales** | Nombrar con `vidrio`, `glass`, `cristal` o `ventana` | El visor los clasifica automáticamente como material URP transparente con brillo fotométrico. |
+| **Vegetación y Hojas** | Nombrar con `enredad`, `hoja`, `leaf`, `plant` o `arbol` | Activa el pipeline Cutout con Alpha Clipping (`_ALPHATEST_ON`), eliminando cuadros blancos y respetando tonos fotográficos. |
+| **Césped y Terreno** | Nombrar con `pasto`, `grass`, `cesped` o `terreno` | Aplica culling superior, evitando que losas o asfaltos coplanares inferiores se traslapen (*z-fighting*). |
+| **Cuadros y Láminas Murales** | Separar al menos $1 \text{ a } 2 \text{ mm}$ del muro base | Previene el parpadeo de texturas coplanares cuando dos caras comparten exactamente la misma coordenada. |
+| **Presupuesto Poligonal** | **Menor a $2\text{M}$ de triángulos** para Meta Quest autónomo | Asegura 90 FPS estables. Modelos más pesados deben optimizarse desde este portal usando *Recorrido de Lujo VR*. |
+
+---
+
+## 📋 Requisitos del Sistema
+
+### Para Portal Arquitectura XR (Estación PC):
+- **Sistema Operativo:** Windows 10/11 (64-bit) o macOS 12+ (Apple Silicon o Intel).
+- **Entorno:** Python 3.10 o superior (si se corre desde código fuente) o el ejecutable portable empaquetado `.exe` / `.app`.
+- **Puertos de Red:** `8000` TCP (Servidor HTTP) y `47777` UDP (Radar broadcast).
+- **Conectividad:** Conexión a la misma red Wi-Fi que el visor Meta Quest (se recomienda router Wi-Fi 5 GHz o 6 GHz).
+
+### Para Visor Arquitectura MR (Visor VR):
+- **Dispositivo:** Meta Quest 2, Meta Quest 3, Meta Quest 3S o Meta Quest Pro.
+- **Instalación:** Paquete `.apk` instalado mediante SideQuest o Meta Quest Developer Hub.
 
 ---
 
 ## 💻 Instalación y Ejecución
 
-### Entorno de Desarrollo
+### Opción A: Ejecución desde Código Fuente (Python)
 
 1. **Clonar el repositorio:**
    ```bash
-   git clone https://github.com/dahghoul/PortalArquitecto.git
-   cd PortalArquitecto
+   git clone https://github.com/roo-soluciones/portal-arquitectura-xr.git
+   cd portal-arquitectura-xr
    ```
 
-2. **Instalar dependencias:**
+2. **Crear entorno virtual e instalar dependencias:**
    ```bash
+   python -m venv .venv
+   # En Windows:
+   .venv\Scripts\activate
+   # En macOS/Linux:
+   source .venv/bin/activate
+
    pip install -r requirements.txt
    ```
 
@@ -106,41 +129,57 @@ PortalArquitecto/
    python portal_arquitecto.py
    ```
 
-> **Consejo:** Para ejecutarlo en modo servidor web estándar abriendo tu navegador habitual en vez de la ventana nativa:
-> ```bash
-> python portal_arquitecto.py --navegador
-> ```
+   > **Modo Navegador:** Si prefieres abrirlo en tu navegador habitual sin ventana nativa pywebview:
+   > ```bash
+   > python portal_arquitecto.py --navegador
+   > ```
+
+### Opción B: Compilación a Ejecutable Nativo
+
+- **En Windows (`.exe`):**
+  Ejecuta `build_windows.bat`. El ejecutable quedará generado en `dist\RooSpatialPortal\RooSpatialPortal.exe`.
+- **En macOS (`.app` y `.dmg`):**
+  Ejecuta `./build_mac.sh`. Se generará el paquete en `dist/RooSpatialPortal.app`.
 
 ---
 
-## 🛠️ Compilación y Distribución
+## 📦 Estructura del Repositorio
 
-### Generar Ejecutable para Windows (`.exe`)
-Ejecuta en la raíz del proyecto:
-```cmd
-build_windows.bat
 ```
-El instalador empaquetará la aplicación en `dist\RooSpatialPortal\RooSpatialPortal.exe`.
-
-### Generar Aplicación para macOS (`.app` y `.dmg`)
-En un entorno macOS:
-```bash
-chmod +x build_mac.sh
-./build_mac.sh
+portal-arquitectura-xr/
+├── portal_arquitecto.py        # Núcleo del servidor, radar UDP y motor de optimización
+├── PortalArquitecto.spec       # Receta de empaquetado PyInstaller para Windows y macOS
+├── build_windows.bat           # Script de compilación desatendida para Windows
+├── build_mac.sh                # Script de compilación, firma y creación de .dmg para macOS
+├── requirements.txt            # Dependencias del proyecto (pywebview, pyinstaller)
+├── .gitignore                  # Reglas de exclusión de Git (builds, temporales y modelos pesados)
+├── .github/
+│   └── workflows/
+│       └── build.yml           # Integración continua para generar instaladores en GitHub Actions
+├── static/                     # Frontend web responsive de la aplicación
+│   ├── img/                    # Identidad gráfica institucional (roo Soluciones Digitales)
+│   │   ├── roo-logo.png        # Logotipo horizontal institucional
+│   │   └── roo-badge.png       # Insignia corporativa
+│   ├── index.html              # Panel de control del portal
+│   ├── styles.css              # Sistema de diseño dark
+│   ├── app.js                  # Lógica de interacción y carga asíncrona
+│   └── vendor/
+│       └── model-viewer.min.js # Motor de previsualización 3D WebGL
+├── modelos_vr/                 # Carpeta de trabajo para modelos .glb cargados
+└── herramientas_vr/            # Binarios auxiliares portables (gltfpack)
 ```
-Se generará `dist/RooSpatialPortal.app` y la imagen distribuible `dist/RooSpatialPortal.dmg`.
 
 ---
 
-## 🏢 Sobre Nosotros
+## 📄 Licencia y Créditos
 
-**roo Soluciones Digitales**  
-*Tecnología con Propósito · El futuro, simple*
+Este software ha sido diseñado y desarrollado como propiedad intelectual de:
 
-Especialistas en ingeniería de software, transformación digital, computación espacial y soluciones interactivas para arquitectura, industria y entretenimiento.
+**roo | Soluciones Digitales**  
+*Lema:* **"Tecnología con Propósito — El futuro, simple"**
 
----
+**Desarrolladores Principales:**
+- **Diego Joel Cuba Moya**
+- **Ronaldo Carlos Robles Romero**
 
-## 📄 Licencia
-
-Este proyecto está bajo la Licencia Propietaria de **roo Soluciones Digitales**. Todos los derechos reservados.
+*Copyright © 2026 roo Soluciones Digitales. Todos los derechos reservados.*

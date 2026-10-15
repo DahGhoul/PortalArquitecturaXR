@@ -1,9 +1,18 @@
+# ================================================================================================
+# PROYECTO: Portal Arquitectura XR (Servidor Local & Hub de Modelos 3D)
+# EMPRESA: roo | Soluciones Digitales
+# LEMA: "Tecnología con Propósito — El futuro, simple"
+# AUTORES: Diego Joel Cuba Moya & Ronaldo Carlos Robles Romero
+# COPYRIGHT: © 2026 roo Soluciones Digitales. Todos los derechos reservados.
+# ================================================================================================
+
 """
-Roo Spatial Portal XR
-=====================
+Portal Arquitectura XR (roo Spatial Portal)
+===========================================
 Pasarela de Geometria 3D y Servidor de Distribucion Local para Meta Quest & WebXR.
-Desarrollado por roo Soluciones Digitales.
-Filosofia: Tecnologia con Proposito · El futuro, simple.
+Desarrollado por roo | Soluciones Digitales.
+Autores: Diego Joel Cuba Moya & Ronaldo Carlos Robles Romero.
+Filosofia: "Tecnologia con Proposito — El futuro, simple"
 
 Arquitectura:
 - Servidor HTTP multihilo compatible con RFC 7233 (Range Requests) para streaming 3D.
@@ -29,10 +38,11 @@ import urllib.parse
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 
 # Metadatos del Software y Branding Institucional
-APP_NAME = "Roo Spatial Portal XR"
+APP_NAME = "Portal Arquitectura XR"
 APP_VERSION = "1.2.0"
-COMPANY_NAME = "roo Soluciones Digitales"
-SLOGAN = "Tecnologia con Proposito · El futuro, simple"
+COMPANY_NAME = "roo | Soluciones Digitales"
+SLOGAN = "Tecnología con Propósito — El futuro, simple"
+AUTHORS = "Diego Joel Cuba Moya & Ronaldo Carlos Robles Romero"
 
 HTTP_PORT_DEFAULT = 8000
 UDP_RADAR_PORT = 47777
@@ -793,6 +803,7 @@ def main():
     print("=" * 64)
     print(f" {APP_NAME} v{APP_VERSION} - {COMPANY_NAME}")
     print(f" {SLOGAN}")
+    print(f" Autores: {AUTHORS}")
     print("=" * 64)
     print(f" Servidor Activo : http://{ip_actual}:{PUERTO_HTTP}")
     print(f" PIN de Enlace   : {pin_actual}")
