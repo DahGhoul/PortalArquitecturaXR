@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servidor de Modelos XR</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script type="module" src="/vendor/model-viewer.min.js"></script>
+</head>
+<body>
+
+<header class="topbar">
+    <div class="topbar-left">
+        <span class="app-title">Servidor Local de Geometria XR</span>
+        <div class="divider-v"></div>
+        <div class="status-indicator" title="Direccion por la que el Meta Quest se conecta a este equipo">
+            <span class="dot"></span>
+            <span id="ip-display">Iniciando...</span>
+        </div>
+    </div>
+    <div class="topbar-right">
+        <div class="pin-badge" title="Escribe este PIN en el visor del Meta Quest para conectarte a este equipo">
+            <span class="pin-label">PIN Visor</span>
+            <span class="pin-value" id="pin-display">----</span>
+        </div>
+        <button class="btn" id="btn-carpeta" title="Abre en el explorador la carpeta donde se guardan los .glb. Tambien puedes copiar modelos ahi directamente.">
+            <svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+            Abrir carpeta
+        </button>
+        <button class="btn" id="btn-actualizar" title="Vuelve a leer la carpeta de modelos. La lista tambien se refresca sola cada pocos segundos.">
+            <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg>
+            Recargar lista
+        </button>
+    </div>
+</header>
+
+<main class="workspace">
+    <div class="col">
+        <section class="panel">
+            <div class="panel-header">
+                <span class="panel-title">Importar modelo 3D</span>
+                <span class="panel-note">Formato binario glTF (.glb)</span>
+            </div>
+            <div class="panel-body">
+                <div class="upload-zone" id="drop-zone">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                    <div class="upload-title">Arrastra un archivo .glb aqui o haz clic para seleccionar</div>
+                    <div class="upload-hint">Se publicara inmediatamente en la red local para Meta Quest</div>
+                    <input type="file" id="file-input" accept=".glb" style="display:none">
+                </div>
+
+                <div class="toolbar-row" title="Se aplica al subir un modelo y al pulsar &quot;Optimizar VR&quot; en la lista">
+                    <span>Modo de optimización VR <span class="hint">(al subir y en "Optimizar VR")</span></span>
+                    <select id="sel-modo">
+                        <option value="lujo" selected>Recorrido de Lujo VR (Recomendado: 100% Geometría Intacta + 90 FPS)</option>
+                        <option value="equilibrado">Equilibrado VR (-15% Triángulos con Bordes Protegidos)</option>
+                        <option value="ultra">Ultra Ligero VR (-50% Triángulos con Bordes Protegidos)</option>
+                        <option value="preservar">Sin optimizar (Guardar archivo tal cual, sin cambios)</option>
+                    </select>
+                </div>
+
+                <div id="progress-wrap">
+                    <div class="progress-row">
+                        <span id="progress-text">Subiendo archivo...</span>
+                        <span id="progress-percent" style="font-family:var(--mono);">0%</span>
+                    </div>
+                    <div class="progress-track"><div class="progress-bar" id="progress-fill"></div></div>
+                </div>
+                <div id="upload-msg" class="msg"></div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="panel-header">
+                <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                    <span class="panel-title">Modelos alojados</span>
+                    <span id="storage-badge" class="panel-note" style="font-family: var(--mono); color: var(--text-secondary);" title="Espacio total que ocupan los modelos en disco">0 MB en disco</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                    <span id="count-badge" class="panel-note" style="font-family: var(--mono);">0 archivos</span>
+                    <button class="btn btn-ghost-danger" id="btn-limpiar-temporales" style="display:none;" title="Eliminar copias de respaldo (.originales, .bak) y recuperar espacio">
+                        <svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        <span id="btn-limpiar-label">Liberar copias</span>
+                    </button>
+                    <button class="btn btn-ghost-danger" id="btn-vaciar-todo" title="Eliminar todos los modelos del servidor para dejar la app limpia con 0 MB">
+                        Vaciar todo
+                    </button>
+                </div>
+            </div>
+            <div id="storage-msg" class="msg" style="margin: 12px 20px 0 20px;"></div>
+            <div id="table-wrapper"></div>
+        </section>
+    </div>
+
+    <section class="panel">
+        <div class="panel-header">
+            <span class="panel-title">Inspeccion de geometria</span>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <span id="preview-name" class="panel-note" style="font-family: var(--mono);">Vista 3D apagada</span>
+                <button class="btn" id="btn-cerrar-visor" style="display:none;">Cerrar visor</button>
+            </div>
+        </div>
+        <div id="viewer-host">
+            <div class="viewer-idle" id="viewer-idle">
+                <strong>Vista previa apagada</strong>
+                <span>El visor no consume GPU hasta que pulses "Inspeccionar" en un modelo.</span>
+            </div>
+        </div>
+        <div class="viewer-footer">
+            <span class="hint-mouse">Clic izq: Orbitar | Clic der: Paneo | Rueda: Zoom</span>
+            <span class="hint-touch">1 dedo: Orbitar | 2 dedos: Paneo y Zoom</span>
+            <span id="preview-meta"></span>
+        </div>
+    </section>
+</main>
+
+<script src="/app.js"></script>
+</body>
+</html>

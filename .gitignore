@@ -1,0 +1,40 @@
+# Entornos virtuales
+.venv/
+venv/
+.venv-build/
+env/
+ENV/
+
+# Cache de Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+
+# Salidas de compilación y empaquetado (PyInstaller)
+build/
+dist/
+
+# Modelos 3D y copias del usuario (no subir archivos binarios pesados al repositorio)
+modelos_vr/*
+!modelos_vr/.gitkeep
+!modelos_vr/_estado.json
+
+# Binarios de herramientas descargadas automáticamente
+herramientas_vr/*
+!herramientas_vr/.gitkeep
+
+# Logs y archivos temporales
+*.log
+portal.log
+*.tmp
+*.bak
+*.part
+*.opt.glb
+
+# Archivos de sistema y editores
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/

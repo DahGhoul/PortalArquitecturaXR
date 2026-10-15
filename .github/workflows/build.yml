@@ -1,0 +1,35 @@
+# Compila Windows y macOS en la nube de GitHub (util si no tienes un Mac).
+# Se ejecuta a mano desde la pestana "Actions" o al crear un tag v*. Descarga los resultados en "Artifacts".
+name: Build PortalArquitecto
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -r requirements.txt
+      - run: pyinstaller --noconfirm --clean PortalArquitecto.spec
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PortalArquitecto-Windows
+          path: dist/PortalArquitecto/
+
+  macos:
+    runs-on: macos-latest   # Apple Silicon
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: chmod +x build_mac.sh && ./build_mac.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PortalArquitecto-macOS
+          path: dist/PortalArquitecto.dmg
+
