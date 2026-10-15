@@ -1,4 +1,4 @@
-name: Build Roo Spatial Portal XR
+name: Build Portal Arquitectura XR
 
 on:
   workflow_dispatch:
@@ -16,8 +16,8 @@ jobs:
       - run: pyinstaller --noconfirm --clean PortalArquitecto.spec
       - uses: actions/upload-artifact@v4
         with:
-          name: RooSpatialPortal-Windows
-          path: dist/RooSpatialPortal/
+          name: PortalArquitecturaXR-Windows
+          path: dist/PortalArquitecturaXR/
 
   macos:
     runs-on: macos-latest   # Apple Silicon
@@ -28,6 +28,6 @@ jobs:
       - run: chmod +x build_mac.sh && ./build_mac.sh
       - uses: actions/upload-artifact@v4
         with:
-          name: RooSpatialPortal-macOS
-          path: dist/RooSpatialPortal.dmg
+          name: PortalArquitecturaXR-macOS
+          path: dist/PortalArquitecturaXR.dmg
 

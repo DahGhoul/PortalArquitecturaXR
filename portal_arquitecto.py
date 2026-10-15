@@ -61,7 +61,7 @@ def carpeta_datos_usuario():
         base = os.path.join(os.path.expanduser("~"), "Library", "Application Support")
     else:
         base = os.environ.get("XDG_DATA_HOME") or os.path.join(os.path.expanduser("~"), ".local", "share")
-    return os.path.join(base, "RooSpatialPortal")
+    return os.path.join(base, "PortalArquitecturaXR")
 
 
 # Resolucion de rutas segun entorno (ejecucion directa vs empaquetado binario)

@@ -137,9 +137,9 @@ Para asegurar que los modelos se visualicen con máxima fidelidad, sin errores v
 ### Opción B: Compilación a Ejecutable Nativo
 
 - **En Windows (`.exe`):**
-  Ejecuta `build_windows.bat`. El ejecutable quedará generado en `dist\RooSpatialPortal\RooSpatialPortal.exe`.
+  Ejecuta `build_windows.bat`. El ejecutable quedará generado en `dist\PortalArquitecturaXR\PortalArquitecturaXR.exe`.
 - **En macOS (`.app` y `.dmg`):**
-  Ejecuta `./build_mac.sh`. Se generará el paquete en `dist/RooSpatialPortal.app`.
+  Ejecuta `./build_mac.sh`. Se generará el paquete en `dist/PortalArquitecturaXR.app`.
 
 ---
 

@@ -28,22 +28,22 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name="RooSpatialPortal",
+    name="PortalArquitecturaXR",
     console=False,
     upx=False,
     icon=None,
 )
 
-coll = COLLECT(exe, a.binaries, a.datas, name="RooSpatialPortal", upx=False)
+coll = COLLECT(exe, a.binaries, a.datas, name="PortalArquitecturaXR", upx=False)
 
 if ES_MAC:
     app = BUNDLE(
         coll,
-        name="RooSpatialPortal.app",
+        name="PortalArquitecturaXR.app",
         icon=None,
-        bundle_identifier="com.roosoluciones.spatialportal",
+        bundle_identifier="com.roosoluciones.portalarquitecturaxr",
         info_plist={
-            "CFBundleDisplayName": "Roo Spatial Portal XR",
+            "CFBundleDisplayName": "Portal Arquitectura XR",
             "CFBundleShortVersionString": "1.2.0",
             "NSHighResolutionCapable": True,
             "NSLocalNetworkUsageDescription": "Necesario para que el visor Meta Quest descubra este equipo mediante broadcast en la red local.",
