@@ -449,6 +449,33 @@ def sanitizar_extensiones_gltf(ruta_archivo):
                 mat["doubleSided"] = True
                 modificado = True
 
+        # Si alguna primitiva no tiene material asignado (caras sin pintar en SketchUp),
+        # el estandar glTF 2.0 le aplica el material por defecto con doubleSided=False,
+        # haciendo que techos o muros sin pintar sean invisibles desde adentro/abajo.
+        idx_mat_default = None
+        for mesh in data.get("meshes", []):
+            for prim in mesh.get("primitives", []):
+                if prim.get("material") is None:
+                    if idx_mat_default is None:
+                        mats = data.setdefault("materials", [])
+                        for idx_m, m_ex in enumerate(mats):
+                            if m_ex.get("name") in ("[Color M00]", "Color M00", "Default_DoubleSided"):
+                                idx_mat_default = idx_m
+                                break
+                        if idx_mat_default is None:
+                            idx_mat_default = len(mats)
+                            mats.append({
+                                "name": "Default_DoubleSided",
+                                "doubleSided": True,
+                                "pbrMetallicRoughness": {
+                                    "baseColorFactor": [0.95, 0.95, 0.95, 1.0],
+                                    "metallicFactor": 0.0,
+                                    "roughnessFactor": 0.8
+                                }
+                            })
+                    prim["material"] = idx_mat_default
+                    modificado = True
+
         if modificado:
             new_json_bytes = json.dumps(data, ensure_ascii=False, separators=(',', ':')).encode("utf-8")
             padding_len = (4 - (len(new_json_bytes) % 4)) % 4
