@@ -432,6 +432,23 @@ def sanitizar_extensiones_gltf(ruta_archivo):
                     mat.pop("extensions", None)
                 modificado = True
 
+            pbr = mat.get("pbrMetallicRoughness", {})
+            if "baseColorTexture" in pbr:
+                bcf = pbr.get("baseColorFactor", [1.0, 1.0, 1.0, 1.0])
+                alpha = bcf[3] if len(bcf) >= 4 else 1.0
+                if alpha >= 0.99:
+                    if any(c < 0.95 for c in bcf[:3]):
+                        pbr["baseColorFactor"] = [1.0, 1.0, 1.0, 1.0]
+                        modificado = True
+                    if mat.get("alphaMode") == "BLEND":
+                        mat["alphaMode"] = "MASK"
+                        mat["alphaCutoff"] = 0.5
+                        modificado = True
+
+            if not mat.get("doubleSided", False):
+                mat["doubleSided"] = True
+                modificado = True
+
         if modificado:
             new_json_bytes = json.dumps(data, ensure_ascii=False, separators=(',', ':')).encode("utf-8")
             padding_len = (4 - (len(new_json_bytes) % 4)) % 4
