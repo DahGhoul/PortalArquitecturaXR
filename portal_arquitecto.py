@@ -371,8 +371,72 @@ def vaciar_todos_los_modelos():
     return round(liberados / (1024 * 1024), 1)
 
 
+def sanitizar_extensiones_gltf(ruta_archivo):
+    """
+    Convierte extensiones obsoletas de SketchUp (como KHR_materials_pbrSpecularGlossiness de SimLab)
+    a glTF 2.0 PBR Metallic-Roughness estándar, garantizando que todas las texturas carguen en Unity y WebGL.
+    """
+    try:
+        with open(ruta_archivo, "rb") as f:
+            magic, version, length = struct.unpack("<4sII", f.read(12))
+            if magic != b"glTF":
+                return
+            chunk_len, chunk_type = struct.unpack("<I4s", f.read(8))
+            json_bytes = f.read(chunk_len)
+            data = json.loads(json_bytes.decode("utf-8"))
+            bin_chunk_len, bin_chunk_type = struct.unpack("<I4s", f.read(8))
+            bin_bytes = f.read(bin_chunk_len)
+
+        modificado = False
+        exts_used = data.get("extensionsUsed", [])
+        if "KHR_materials_pbrSpecularGlossiness" in exts_used:
+            exts_used.remove("KHR_materials_pbrSpecularGlossiness")
+            data["extensionsUsed"] = exts_used
+            modificado = True
+
+        exts_req = data.get("extensionsRequired", [])
+        if "KHR_materials_pbrSpecularGlossiness" in exts_req:
+            exts_req.remove("KHR_materials_pbrSpecularGlossiness")
+            data["extensionsRequired"] = exts_req
+            modificado = True
+
+        for mat in data.get("materials", []):
+            exts = mat.get("extensions", {})
+            if "KHR_materials_pbrSpecularGlossiness" in exts:
+                sg = exts.pop("KHR_materials_pbrSpecularGlossiness")
+                pbr = mat.setdefault("pbrMetallicRoughness", {})
+                if "baseColorFactor" not in pbr and "diffuseFactor" in sg:
+                    pbr["baseColorFactor"] = sg["diffuseFactor"]
+                if "baseColorTexture" not in pbr and "diffuseTexture" in sg:
+                    pbr["baseColorTexture"] = sg["diffuseTexture"]
+                if not exts:
+                    mat.pop("extensions", None)
+                modificado = True
+
+        if modificado:
+            new_json_bytes = json.dumps(data, ensure_ascii=False, separators=(',', ':')).encode("utf-8")
+            padding_len = (4 - (len(new_json_bytes) % 4)) % 4
+            new_json_bytes += b" " * padding_len
+            total_len = 12 + 8 + len(new_json_bytes) + 8 + len(bin_bytes)
+
+            tmp_path = ruta_archivo + ".san.glb"
+            with open(tmp_path, "wb") as f:
+                f.write(struct.pack("<4sII", magic, version, total_len))
+                f.write(struct.pack("<I4s", len(new_json_bytes), b"JSON"))
+                f.write(new_json_bytes)
+                f.write(struct.pack("<I4s", len(bin_bytes), b"BIN\x00"))
+                f.write(bin_bytes)
+            os.replace(tmp_path, ruta_archivo)
+            print(f"[OPTIMIZADOR] Sanitizado exitoso de materiales obsoletos en {os.path.basename(ruta_archivo)}")
+    except Exception as e:
+        print(f"[WARN] No se pudo sanitizar glTF: {e}")
+
+
 def procesar_modelo_glb(ruta_entrada, modo_optimizacion):
     """Optimiza directamente el GLB sin duplicarlo en .originales (cero redundancia)."""
+    # 1. Sanitizar materiales de SketchUp / SimLab antes de cualquier proceso
+    sanitizar_extensiones_gltf(ruta_entrada)
+
     piezas_antes, _ = contar_piezas_glb(ruta_entrada)
     peso_antes = os.path.getsize(ruta_entrada)
 

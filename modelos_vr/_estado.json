@@ -1,4 +1,21 @@
 {
-  "modelo_activo": "",
-  "historial": {}
+  "modelo_activo": "CENTRO CULTURAL AYNI A explotado.glb",
+  "historial": {
+    "CENTRO CULTURAL AYNI A.glb": {
+      "optimizado": true,
+      "mensaje": "Recorrido de Lujo VR (Geometria 100% Intacta, 90 FPS) (25777 -> 72 mallas)",
+      "nodos_antes": 25777,
+      "nodos_despues": 72,
+      "peso_antes_mb": 46.83,
+      "peso_despues_mb": 78.3
+    },
+    "CENTRO CULTURAL AYNI A explotado.glb": {
+      "optimizado": true,
+      "mensaje": "Recorrido de Lujo VR (Geometria 100% Intacta, 90 FPS) (3701 -> 28 mallas)",
+      "nodos_antes": 3701,
+      "nodos_despues": 28,
+      "peso_antes_mb": 100.53,
+      "peso_despues_mb": 65.2
+    }
+  }
 }
