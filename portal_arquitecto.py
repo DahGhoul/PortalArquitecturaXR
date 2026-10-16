@@ -98,18 +98,33 @@ TAMANO_MAX_SUBIDA = MAX_UPLOAD_SIZE
 
 
 def obtener_ip_local():
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    try:
-        s.connect(("8.8.8.8", 80))
-        ip = s.getsockname()[0]
-    except Exception:
+    for destino in (("8.8.8.8", 80), ("192.168.1.1", 80), ("192.168.0.1", 80), ("192.168.137.1", 80), ("10.255.255.255", 1)):
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try:
-            ip = socket.gethostbyname(socket.gethostname())
+            s.connect(destino)
+            ip = s.getsockname()[0]
+            if ip and not ip.startswith("127.") and not ip.startswith("169.254."):
+                return ip
         except Exception:
-            ip = "127.0.0.1"
-    finally:
-        s.close()
-    return ip
+            pass
+        finally:
+            s.close()
+
+    try:
+        candidatas = []
+        for info in socket.getaddrinfo(socket.gethostname(), None, socket.AF_INET):
+            ip_cand = info[4][0]
+            if ip_cand and not ip_cand.startswith("127.") and not ip_cand.startswith("169.254."):
+                candidatas.append(ip_cand)
+        for prefijo in ("192.168.", "10.", "172."):
+            for c in candidatas:
+                if c.startswith(prefijo):
+                    return c
+        if candidatas:
+            return candidatas[0]
+    except Exception:
+        pass
+    return "127.0.0.1"
 
 
 def generar_codigo_pin(ip):
@@ -142,6 +157,10 @@ def iniciar_radar_udp():
                     "modelo_activo": obtener_modelo_activo()
                 }).encode("utf-8")
                 sock.sendto(mensaje, ("255.255.255.255", PUERTO_UDP_RADAR))
+                partes = ip.split(".")
+                if len(partes) == 4 and partes[0] != "127":
+                    bcast_subred = f"{partes[0]}.{partes[1]}.{partes[2]}.255"
+                    sock.sendto(mensaje, (bcast_subred, PUERTO_UDP_RADAR))
             except Exception:
                 pass
             time.sleep(2.0)
