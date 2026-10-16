@@ -1,16 +1,17 @@
 # ================================================================================================
 # PROYECTO: Portal Arquitectura XR (Servidor Local & Hub de Modelos 3D)
-# EMPRESA: roo | Soluciones Digitales
-# LEMA: "Tecnología con Propósito — El futuro, simple"
+# ORIGEN: Universidad Nacional de Trujillo (UNT) — Ing. de Sistemas & Arquitectura
+# COLABORACIÓN: roo | Soluciones Digitales ("Tecnología con Propósito — El futuro, simple")
 # AUTORES: Diego Joel Cuba Moya & Ronaldo Carlos Robles Romero
-# COPYRIGHT: © 2026 roo Soluciones Digitales. Todos los derechos reservados.
+# NATURALEZA: Desarrollo académico e innovación tecnológica interdisciplinaria (Sin fines de lucro)
 # ================================================================================================
 
 """
-Portal Arquitectura XR (roo Spatial Portal)
-===========================================
+Portal Arquitectura XR
+======================
 Pasarela de Geometria 3D y Servidor de Distribucion Local para Meta Quest & WebXR.
-Desarrollado por roo | Soluciones Digitales.
+Desarrollo interdisciplinario de estudiantes de Ingenieria de Sistemas y Arquitectura
+de la Universidad Nacional de Trujillo (UNT), en colaboracion con roo | Soluciones Digitales.
 Autores: Diego Joel Cuba Moya & Ronaldo Carlos Robles Romero.
 Filosofia: "Tecnologia con Proposito — El futuro, simple"
 
@@ -37,9 +38,10 @@ import urllib.request
 import urllib.parse
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 
-# Metadatos del Software y Branding Institucional
+# Metadatos del Software y Branding Institucional / Académico
 APP_NAME = "Portal Arquitectura XR"
 APP_VERSION = "1.2.0"
+INSTITUTION_NAME = "Universidad Nacional de Trujillo (UNT) — Ing. de Sistemas & Arquitectura"
 COMPANY_NAME = "roo | Soluciones Digitales"
 SLOGAN = "Tecnología con Propósito — El futuro, simple"
 AUTHORS = "Diego Joel Cuba Moya & Ronaldo Carlos Robles Romero"

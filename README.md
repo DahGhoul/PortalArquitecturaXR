@@ -19,9 +19,11 @@
 
 ---
 
-### **Desarrollado por:**
-**Diego Joel Cuba Moya** & **Ronaldo Carlos Robles Romero**  
-**Empresa:** **roo | Soluciones Digitales**
+### **Proyecto de Innovación Académica y Tecnológica (Sin Fines de Lucro)**
+Desarrollado por estudiantes de **Ingeniería de Sistemas** junto con estudiantes de **Arquitectura**  
+de la **Universidad Nacional de Trujillo (UNT)**, en colaboración con **roo | Soluciones Digitales**
+
+**Autores Principales:** **Diego Joel Cuba Moya** & **Ronaldo Carlos Robles Romero**
 
 </div>
 
@@ -29,7 +31,10 @@
 
 ## 🏛️ Ecosistema Arquitectura MR / XR
 
-Este proyecto forma parte de la suite espacial de **roo | Soluciones Digitales**, compuesta por dos sistemas complementarios diseñados para trabajar en sincronía sin cables:
+> [!IMPORTANT]
+> **Naturaleza del Proyecto:** Este ecosistema es un desarrollo tecnológico e interdisciplinario de carácter académico y privado (no es un producto comercial a la venta ni tiene fines de lucro). Fue concebido y construido por estudiantes de **Ingeniería de Sistemas** y **Arquitectura** de la **Universidad Nacional de Trujillo (UNT)** en colaboración con **roo | Soluciones Digitales**.
+
+Este repositorio conforma la estación de control y servidor local en PC, diseñado para trabajar en sincronía sin cables junto a su contraparte inmersiva en Meta Quest:
 
 ```
 ┌────────────────────────────────────────┐       Wi-Fi Local (5 GHz)        ┌────────────────────────────────────────┐
@@ -175,7 +180,7 @@ Este proyecto forma parte de la suite espacial de **roo | Soluciones Digitales**
 ## 📦 Estructura del Repositorio
 
 ```
-portal-arquitectura-xr/
+PortalArquitecturaXR/
 ├── portal_arquitecto.py        # Núcleo del servidor, radar UDP y motor de optimización
 ├── PortalArquitecto.spec       # Receta de empaquetado PyInstaller para Windows y macOS
 ├── build_windows.bat           # Script de compilación desatendida para Windows
@@ -200,15 +205,17 @@ portal-arquitectura-xr/
 
 ---
 
-## 📄 Licencia y Créditos
+## 📄 Créditos, Institución y Colaboración
 
-Este software ha sido diseñado y desarrollado como propiedad intelectual de:
+Este software es una iniciativa de investigación, innovación y desarrollo tecnológico interdisciplinario (**sin fines comerciales ni de lucro**), elaborada conjuntamente entre:
 
-**roo | Soluciones Digitales**  
-*Lema:* **"Tecnología con Propósito — El futuro, simple"**
+- 🎓 **Universidad Nacional de Trujillo (UNT):**  
+  Estudiantes de la **Escuela Profesional de Ingeniería de Sistemas** en trabajo colaborativo con estudiantes de la **Escuela Profesional de Arquitectura**.
+- 🤝 **En colaboración con:** **roo | Soluciones Digitales**  
+  *Lema:* **"Tecnología con Propósito — El futuro, simple"**
 
-**Desarrolladores Principales:**
+**Autores y Desarrolladores Principales:**
 - **Diego Joel Cuba Moya**
 - **Ronaldo Carlos Robles Romero**
 
-*Copyright © 2026 roo Soluciones Digitales. Todos los derechos reservados.*
+*© 2026 Universidad Nacional de Trujillo (UNT) · En colaboración con roo Soluciones Digitales. Proyecto académico y de innovación tecnológica sin fines de lucro.*
